@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { FileText, MailCheck, ShoppingBag, Stamp } from "lucide-react";
+import { Eye, EyeOff, FileText, MailCheck, ShoppingBag, Stamp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -48,6 +48,7 @@ function Auth() {
   const [phone, setPhone] = useState("");
   const [busy, setBusy] = useState(false);
   const [verifySent, setVerifySent] = useState(false);
+  const [showPw, setShowPw] = useState(false);
 
   useEffect(() => {
     void (async () => {
@@ -57,22 +58,6 @@ function Auth() {
       navigate({ to, replace: true });
     })();
   }, [navigate]);
-
-  async function signInWithGoogle() {
-    setBusy(true);
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: { redirectTo: `${window.location.origin}/auth` },
-      });
-      if (error) throw error;
-      // Browser is redirected to Google; the useEffect above routes after return.
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Google sign-in failed");
-    } finally {
-      setBusy(false);
-    }
-  }
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -190,19 +175,29 @@ function Auth() {
               <Label htmlFor="password" className="label-tag">
                 Password
               </Label>
+              <div className="relative">
               <Input
                 id="password"
-                type="password"
+                type={showPw ? "text" : "password"}
                 required
                 minLength={6}
                 autoComplete={mode === "signup" ? "new-password" : "current-password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="border-white/20 bg-transparent text-ink-foreground"
+                className="border-white/20 bg-transparent pr-10 text-ink-foreground"
               />
+              <button
+                type="button"
+                onClick={() => setShowPw((v) => !v)}
+                aria-label={showPw ? "Hide password" : "Show password"}
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-ink-foreground/60 hover:text-ink-foreground"
+              >
+                {showPw ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
+              </div>
             </div>
             <Button
-              type="submit"
+              type="submit
               disabled={busy}
               className="w-full bg-lime text-lime-foreground hover:bg-lime/90"
             >
@@ -221,22 +216,6 @@ function Auth() {
               in.
             </p>
           ) : null}
-
-          <div className="mt-6 flex items-center gap-3 text-[10px] uppercase tracking-widest text-ink-foreground/40">
-            <span className="h-px flex-1 bg-white/15" />
-            or
-            <span className="h-px flex-1 bg-white/15" />
-          </div>
-
-          <Button
-            type="button"
-            variant="outline"
-            disabled={busy}
-            onClick={() => void signInWithGoogle()}
-            className="mt-4 w-full border-white/25 bg-transparent text-ink-foreground hover:bg-white/10"
-          >
-            Continue with Google
-          </Button>
 
           <button
             type="button"
