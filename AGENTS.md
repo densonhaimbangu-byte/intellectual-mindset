@@ -1,0 +1,2 @@
+- Order slips share one screenshot/export component; issue them only after a successful order write, and use server-owned status for payment confirmation.
+- Guest slip snapshots stay in the submitting browser; account order reads are user-scoped under existing RLS, never by email or public order ID.

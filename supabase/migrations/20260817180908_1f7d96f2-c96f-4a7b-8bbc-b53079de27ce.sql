@@ -1,0 +1,4 @@
+CREATE POLICY "Anyone can read store files" ON storage.objects FOR SELECT TO anon, authenticated USING (bucket_id IN ('product-images','documents'));
+CREATE POLICY "Admin can upload store files" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id IN ('product-images','documents') AND public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admin can update store files" ON storage.objects FOR UPDATE TO authenticated USING (bucket_id IN ('product-images','documents') AND public.has_role(auth.uid(), 'admin'));
+CREATE POLICY "Admin can delete store files" ON storage.objects FOR DELETE TO authenticated USING (bucket_id IN ('product-images','documents') AND public.has_role(auth.uid(), 'admin'));
