@@ -197,7 +197,7 @@ function Auth() {
               </div>
             </div>
             <Button
-              type="submit
+              type="submit"
               disabled={busy}
               className="w-full bg-lime text-lime-foreground hover:bg-lime/90"
             >
